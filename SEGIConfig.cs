@@ -6,55 +6,55 @@ namespace tarkin.SEGI.Bep
     internal class SEGIConfig
     {
         // Main Configuration
-        internal static ConfigEntry<SEGIRenderer.VoxelResolution> voxelResolution;
-        internal static ConfigEntry<bool> voxelAA;
-        internal static ConfigEntry<int> innerOcclusionLayers;
-        internal static ConfigEntry<bool> gaussianMipFilter;
-        internal static ConfigEntry<float> voxelSpaceSize;
-        internal static ConfigEntry<float> shadowSpaceSize;
-        internal static ConfigEntry<bool> updateGI;
-        internal static ConfigEntry<bool> infiniteBounces;
+        internal ConfigEntry<SEGIRenderer.VoxelResolution> voxelResolution;
+        internal ConfigEntry<bool> voxelAA;
+        internal ConfigEntry<int> innerOcclusionLayers;
+        internal ConfigEntry<bool> gaussianMipFilter;
+        internal ConfigEntry<float> voxelSpaceSize;
+        internal ConfigEntry<float> shadowSpaceSize;
+        internal ConfigEntry<bool> updateGI;
+        internal ConfigEntry<bool> infiniteBounces;
 
         // Environment Properties
-        internal static ConfigEntry<float> softSunlight;
-        internal static ConfigEntry<Color> skyColor;
-        internal static ConfigEntry<float> skyIntensity;
-        internal static ConfigEntry<bool> sphericalSkylight;
+        internal ConfigEntry<float> softSunlight;
+        internal ConfigEntry<Color> skyColor;
+        internal ConfigEntry<float> skyIntensity;
+        internal ConfigEntry<bool> sphericalSkylight;
 
         // Tracing Properties
-        internal static ConfigEntry<float> temporalBlendWeight;
-        internal static ConfigEntry<bool> useBilateralFiltering;
-        internal static ConfigEntry<bool> halfResolution;
-        internal static ConfigEntry<bool> stochasticSampling;
-        internal static ConfigEntry<int> cones;
-        internal static ConfigEntry<int> coneTraceSteps;
-        internal static ConfigEntry<float> coneLength;
-        internal static ConfigEntry<float> coneWidth;
-        internal static ConfigEntry<float> coneTraceBias;
-        internal static ConfigEntry<float> edgeFadeSize;
-        internal static ConfigEntry<float> occlusionStrength;
-        internal static ConfigEntry<float> nearOcclusionStrength;
-        internal static ConfigEntry<float> farOcclusionStrength;
-        internal static ConfigEntry<float> farthestOcclusionStrength;
-        internal static ConfigEntry<float> occlusionPower;
-        internal static ConfigEntry<float> nearLightGain;
-        internal static ConfigEntry<float> giGain;
-        internal static ConfigEntry<float> secondaryBounceGain;
-        internal static ConfigEntry<int> secondaryCones;
-        internal static ConfigEntry<float> secondaryOcclusionStrength;
+        internal ConfigEntry<float> temporalBlendWeight;
+        internal ConfigEntry<bool> useBilateralFiltering;
+        internal ConfigEntry<bool> halfResolution;
+        internal ConfigEntry<bool> stochasticSampling;
+        internal ConfigEntry<int> cones;
+        internal ConfigEntry<int> coneTraceSteps;
+        internal ConfigEntry<float> coneLength;
+        internal ConfigEntry<float> coneWidth;
+        internal ConfigEntry<float> coneTraceBias;
+        internal ConfigEntry<float> edgeFadeSize;
+        internal ConfigEntry<float> occlusionStrength;
+        internal ConfigEntry<float> nearOcclusionStrength;
+        internal ConfigEntry<float> farOcclusionStrength;
+        internal ConfigEntry<float> farthestOcclusionStrength;
+        internal ConfigEntry<float> occlusionPower;
+        internal ConfigEntry<float> nearLightGain;
+        internal ConfigEntry<float> giGain;
+        internal ConfigEntry<float> secondaryBounceGain;
+        internal ConfigEntry<int> secondaryCones;
+        internal ConfigEntry<float> secondaryOcclusionStrength;
 
         // Reflection Properties
-        internal static ConfigEntry<bool> doReflections;
-        internal static ConfigEntry<int> reflectionSteps;
-        internal static ConfigEntry<float> reflectionOcclusionPower;
-        internal static ConfigEntry<float> skyReflectionIntensity;
+        internal ConfigEntry<bool> doReflections;
+        internal ConfigEntry<int> reflectionSteps;
+        internal ConfigEntry<float> reflectionOcclusionPower;
+        internal ConfigEntry<float> skyReflectionIntensity;
 
         // Debug Tools
-        internal static ConfigEntry<bool> visualizeSunDepthTexture;
-        internal static ConfigEntry<bool> visualizeGI;
-        internal static ConfigEntry<bool> visualizeVoxels;
+        internal ConfigEntry<bool> visualizeSunDepthTexture;
+        internal ConfigEntry<bool> visualizeGI;
+        internal ConfigEntry<bool> visualizeVoxels;
 
-        public static void Bind(ConfigFile config)
+        public void Bind(ConfigFile config)
         {
             // Main Configuration
             const string secMain = "1. Main Configuration";
@@ -81,7 +81,7 @@ namespace tarkin.SEGI.Bep
                 new AcceptableValueRange<float>(0, 100f)));
 
             updateGI = config.Bind(secMain, "Update GI", true,
-                "If disabled, GI calculations stop and the scene uses cached data from the last frame. Disable to save performance in static scenes.");
+                "If disabled, GI calculations stop and the scene uses cached data from the last frame. Disable to save performance in scenes.");
 
             infiniteBounces = config.Bind(secMain, "Infinite Bounces", false,
                 "Experimental. Enables a feedback loop for unlimited light bounces. Performance cost depends on 'Secondary Cones' setting.");
@@ -212,6 +212,57 @@ namespace tarkin.SEGI.Bep
 
             visualizeVoxels = config.Bind(secDebug, "Visualize Voxels", false,
                 "Displays the direct voxel data. Useful for checking if objects are being voxelized correctly.");
+        }
+
+        public void Apply(SEGIRenderer segi)
+        {
+            // Main Configuration
+            segi.voxelResolution = voxelResolution.Value;
+            segi.voxelAA = voxelAA.Value;
+            segi.innerOcclusionLayers = innerOcclusionLayers.Value;
+            segi.gaussianMipFilter = gaussianMipFilter.Value;
+            segi.voxelSpaceSize = voxelSpaceSize.Value;
+            segi.shadowSpaceSize = shadowSpaceSize.Value;
+            segi.updateGI = updateGI.Value;
+            segi.infiniteBounces = infiniteBounces.Value;
+
+            // Environment Properties
+            segi.softSunlight = softSunlight.Value;
+            segi.skyColor = skyColor.Value;
+            segi.skyIntensity = skyIntensity.Value;
+            segi.sphericalSkylight = sphericalSkylight.Value;
+
+            // Tracing Properties
+            segi.temporalBlendWeight = temporalBlendWeight.Value;
+            segi.useBilateralFiltering = useBilateralFiltering.Value;
+            segi.halfResolution = halfResolution.Value;
+            segi.stochasticSampling = stochasticSampling.Value;
+            segi.cones = cones.Value;
+            segi.coneTraceSteps = coneTraceSteps.Value;
+            segi.coneLength = coneLength.Value;
+            segi.coneWidth = coneWidth.Value;
+            segi.coneTraceBias = coneTraceBias.Value;
+            segi.occlusionStrength = occlusionStrength.Value;
+            segi.nearOcclusionStrength = nearOcclusionStrength.Value;
+            segi.farOcclusionStrength = farOcclusionStrength.Value;
+            segi.farthestOcclusionStrength = farthestOcclusionStrength.Value;
+            segi.occlusionPower = occlusionPower.Value;
+            segi.nearLightGain = nearLightGain.Value;
+            segi.giGain = giGain.Value;
+            segi.secondaryBounceGain = secondaryBounceGain.Value;
+            segi.secondaryCones = secondaryCones.Value;
+            segi.secondaryOcclusionStrength = secondaryOcclusionStrength.Value;
+
+            // Reflection Properties
+            segi.doReflections = doReflections.Value;
+            segi.reflectionSteps = reflectionSteps.Value;
+            segi.reflectionOcclusionPower = reflectionOcclusionPower.Value;
+            segi.skyReflectionIntensity = skyReflectionIntensity.Value;
+
+            // Debug Tools
+            segi.visualizeSunDepthTexture = visualizeSunDepthTexture.Value;
+            segi.visualizeGI = visualizeGI.Value;
+            segi.visualizeVoxels = visualizeVoxels.Value;
         }
     }
 }

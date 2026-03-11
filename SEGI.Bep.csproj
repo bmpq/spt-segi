@@ -34,10 +34,20 @@
   </ItemGroup>
 
   <Target Name="CopyFilesAfterBuild" AfterTargets="Build">
+    <PropertyGroup>
+      <BepDestination Condition="'$(Configuration)' == 'Debug'">$(SPTPath)\BepInEx\scripts\</BepDestination>
+      <BepDestination Condition="'$(Configuration)' == 'Release'">$(SPTPath)\BepInEx\plugins\SEGI\</BepDestination>
+    </PropertyGroup>
+
     <ItemGroup>
-      <FilesToCopy Include="$(OutputPath)\*.dll" />
+      <CoreFiles Include="$(OutputPath)\SEGI.Core.dll" />
+
+      <BepFiles Include="$(OutputPath)\SEGI.Bep.dll" />
+      <BepFiles Include="$(OutputPath)\SEGI.Bep.pdb" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>
-    
-    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(SPTPath)\BepInEx\plugins\tarkin" />
+
+    <Copy SourceFiles="@(CoreFiles)" DestinationFolder="$(SPTPath)\BepInEx\plugins\SEGI\" />
+    <Copy SourceFiles="@(BepFiles)" DestinationFolder="$(BepDestination)" />
+
   </Target>
 </Project>
