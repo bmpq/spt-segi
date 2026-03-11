@@ -65,7 +65,7 @@ namespace tarkin.SEGI.Bep
             voxelAA = config.Bind(secMain, "Voxel AA", false,
                 "Enables 8x supersampling during voxelization. Improves the look of moving or small objects at the cost of performance.");
 
-            innerOcclusionLayers = config.Bind(secMain, "Inner Occlusion Layers", 1,
+            innerOcclusionLayers = config.Bind(secMain, "Inner Occlusion Layers", 0,
                 new ConfigDescription("Prevents light leaking artifacts, but may cause issues with thin or small objects. Adds black opaque layers to the backside of geometry.",
                 new AcceptableValueRange<int>(0, 2)));
 
@@ -76,7 +76,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("The extents of the voxel volume. Higher values allow farther objects to contribute to GI, but increases the size of individual voxels (reducing detail).",
                 new AcceptableValueRange<float>(0, 100f)));
 
-            shadowSpaceSize = config.Bind(secMain, "Shadow Space Size", 50.0f,
+            shadowSpaceSize = config.Bind(secMain, "Shadow Space Size", 30.0f,
                 new ConfigDescription("Size of the shadow map used for sunlight injection. Recommended to keep this similar to Voxel Space Size.",
                 new AcceptableValueRange<float>(0, 100f)));
 
@@ -94,15 +94,18 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Adds cone-traced soft sunlight. Useful for cloudy scenes, haze, or sunset lighting.",
                 new AcceptableValueRange<float>(0.0f, 16.0f)));
 
-            skyColor = config.Bind(secEnv, "Sky Color", Color.white,
-                "The average color of the sky light added to the scene.");
+            skyColor = config.Bind(secEnv, "Sky Color", Color.white, 
+                new ConfigDescription("The average color of the sky light added to the scene.", 
+                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
             skyIntensity = config.Bind(secEnv, "Sky Intensity", 0f,
                 new ConfigDescription("Tarkov already does fake sky lighting, this setting will just light on top and look wrong.",
-                new AcceptableValueRange<float>(0.0f, 8.0f)));
+                new AcceptableValueRange<float>(0.0f, 8.0f),
+                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
             sphericalSkylight = config.Bind(secEnv, "Spherical Skylight", false,
-                "If enabled, sky light comes from all directions. If disabled, it only comes from the top hemisphere.");
+                new ConfigDescription("If enabled, sky light comes from all directions. If disabled, it only comes from the top hemisphere.",
+                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
 
             // Tracing Properties
@@ -196,9 +199,10 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Higher values can reduce light leaking in reflections.",
                 new AcceptableValueRange<float>(0.001f, 4.0f)));
 
-            skyReflectionIntensity = config.Bind(secRefl, "Sky Reflection Intensity", 1.0f,
+            skyReflectionIntensity = config.Bind(secRefl, "Sky Reflection Intensity", 0.0f,
                 new ConfigDescription("Brightness of sky reflections.",
-                new AcceptableValueRange<float>(0.0f, 1.0f)));
+                new AcceptableValueRange<float>(0.0f, 1.0f),
+                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
 
             // Debug Tools
