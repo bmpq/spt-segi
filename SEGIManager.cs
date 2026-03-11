@@ -44,6 +44,7 @@ namespace tarkin.SEGI.Bep
             segi.giCullingMask =
                 1 << LayerMask.NameToLayer("Default") |
                 1 << LayerMask.NameToLayer("Terrain") |
+                1 << LayerMask.NameToLayer("Player") |
                 1 << LayerMask.NameToLayer("CullingMask");
 
             segi.skyIntensity = 0;
@@ -66,7 +67,23 @@ namespace tarkin.SEGI.Bep
 
         static void PrepareWorld()
         {
+            int layerTransparent = LayerMask.NameToLayer("TransparentCollider");
 
+            foreach (var item in GameObject.FindObjectsOfType<LODGroup>())
+            {
+                foreach (var rend in item.GetComponentsInChildren<MeshRenderer>())
+                {
+                    foreach (var mat in rend.sharedMaterials)
+                    {
+                        if (mat ==  null) continue;
+                        if (mat.name.Contains("glass"))
+                        {
+                            rend.gameObject.layer = layerTransparent;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         public void Toggle()
