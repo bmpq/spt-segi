@@ -27,8 +27,12 @@ namespace tarkin.SEGI.Bep
             SEGIRenderer segi = CameraClass.Instance.Camera.gameObject.AddComponent<SEGIRenderer>();
 
             segi.assetResources = SEGIAssetManager.GetAssets();
-            segi.giCullingMask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Terrain");
-            segi.sun = Singleton<TOD_Sky>.Instance.Components.LightSource;
+            segi.giCullingMask = 
+                1 << LayerMask.NameToLayer("Default") |
+                1 << LayerMask.NameToLayer("Terrain") | 
+                1 << LayerMask.NameToLayer("CullingMask");
+
+
             segi.skyIntensity = 0;
 
             segi.enabled = true;
