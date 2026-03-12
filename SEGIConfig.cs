@@ -24,6 +24,7 @@ namespace tarkin.SEGI.Bep
 
         // Environment Properties
         internal ConfigEntry<float> softSunlight;
+        internal ConfigEntry<float> emissionContribution;
         internal ConfigEntry<Color> skyColor;
         internal ConfigEntry<float> skyIntensity;
         internal ConfigEntry<bool> sphericalSkylight;
@@ -111,8 +112,13 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Adds cone-traced soft sunlight. Useful for cloudy scenes, haze, or sunset lighting.",
                 new AcceptableValueRange<float>(0.0f, 16.0f)));
 
-            skyColor = config.Bind(secEnv, "Sky Color", Color.white, 
-                new ConfigDescription("The average color of the sky light added to the scene.", 
+            skyColor = config.Bind(secEnv, "Sky Color", Color.white,
+                new ConfigDescription("The average color of the sky light added to the scene.",
+                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
+
+            emissionContribution = config.Bind(secEnv, "Emissive materials factor", 0f, 
+                new ConfigDescription("Tarkov already does fake emissive lighting either with point lights or analytic command buffer injection, enabling this setting will prolly look bad.", 
+                new AcceptableValueRange<float>(0.0f, 5.0f),
                 tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
 
             skyIntensity = config.Bind(secEnv, "Sky Intensity", 0f,
@@ -254,6 +260,7 @@ namespace tarkin.SEGI.Bep
 
             softSunlight.Value = 0f;
             skyIntensity.Value = 0f;
+            emissionContribution.Value = 0f;
             sphericalSkylight.Value = false;
             skyReflectionIntensity.Value = 0f;
 
@@ -351,6 +358,7 @@ namespace tarkin.SEGI.Bep
             segi.skyColor = skyColor.Value;
             segi.skyIntensity = skyIntensity.Value;
             segi.sphericalSkylight = sphericalSkylight.Value;
+            segi.emissionContribution = emissionContribution.Value;
 
             // Tracing Properties
             segi.temporalBlendWeight = temporalBlendWeight.Value;
