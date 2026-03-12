@@ -78,7 +78,7 @@ namespace tarkin.SEGI.Bep
             const string secMain = "1. Main Configuration";
 
             voxelResolution = config.Bind(secMain, "Voxel Resolution", SEGIRenderer.VoxelResolution.high,
-                "Significant performance impact. Reduces performance load heavily if lowered. Controls the resolution of the volume used to store scene data.");
+                "Significant performance impact. Reduces performance load heavily if lowered. Controls the resolution of the volume used to store scene data. Needs raid restart to apply.");
 
             voxelAA = config.Bind(secMain, "Voxel AA", false,
                 "Enables 8x supersampling during voxelization. Improves the look of moving or small objects at the cost of performance.");
@@ -87,7 +87,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Prevents light leaking artifacts, but may cause issues with thin or small objects. Adds black opaque layers to the backside of geometry.",
                 new AcceptableValueRange<int>(0, 2)));
 
-            gaussianMipFilter = config.Bind(secMain, "Gaussian Mip Filter", false,
+            gaussianMipFilter = config.Bind(secMain, "Gaussian Mip Filter", true,
                 "Improves smoothness and consistency of lighting and reflections. Has a significant performance impact at High voxel resolution, but minor impact at Low resolution.");
 
             voxelSpaceSize = config.Bind(secMain, "Voxel Space Size", 25.0f,
@@ -187,7 +187,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Higher values cause indirect shadows to 'fill out' more.",
                 new AcceptableValueRange<float>(0.001f, 4.0f)));
 
-            nearLightGain = config.Bind(secTrace, "Near Light Gain", 1.0f,
+            nearLightGain = config.Bind(secTrace, "Near Light Gain", 0.0f,
                 new ConfigDescription("Controls close-proximity light intensity. Lower values result in a cleaner, less noisy look.",
                 new AcceptableValueRange<float>(0.0f, 4.0f)));
 
@@ -264,6 +264,8 @@ namespace tarkin.SEGI.Bep
             sphericalSkylight.Value = false;
             skyReflectionIntensity.Value = 0f;
 
+            nearLightGain.Value = 0f;
+
             visualizeSunDepthTexture.Value = false;
             visualizeGI.Value = false;
             visualizeVoxels.Value = false;
@@ -271,7 +273,7 @@ namespace tarkin.SEGI.Bep
             switch (preset)
             {
                 case Preset.Low:
-                    voxelResolution.Value = SEGIRenderer.VoxelResolution.low;
+                    voxelResolution.Value = SEGIRenderer.VoxelResolution.high;
                     voxelAA.Value = false;
                     innerOcclusionLayers.Value = 0;
                     gaussianMipFilter.Value = false;
@@ -292,7 +294,6 @@ namespace tarkin.SEGI.Bep
                     farOcclusionStrength.Value = 1f;
                     farthestOcclusionStrength.Value = 1f;
                     occlusionPower.Value = 1.5f;
-                    nearLightGain.Value = 1f;
                     giGain.Value = 4f;
 
                     secondaryBounceGain.Value = 1f;
@@ -308,7 +309,7 @@ namespace tarkin.SEGI.Bep
                     voxelResolution.Value = SEGIRenderer.VoxelResolution.high;
                     voxelAA.Value = false;
                     innerOcclusionLayers.Value = 0;
-                    gaussianMipFilter.Value = false;
+                    gaussianMipFilter.Value = true;
                     voxelSpaceSize.Value = 25f;
                     shadowSpaceSize.Value = 30f;
                     infiniteBounces.Value = false;
@@ -318,7 +319,7 @@ namespace tarkin.SEGI.Bep
                     stochasticSampling.Value = true;
                     cones.Value = 6;
                     coneTraceSteps.Value = 14;
-                    coneLength.Value = 1f;
+                    coneLength.Value = 2f;
                     coneWidth.Value = 5.5f;
                     coneTraceBias.Value = 1f;
                     occlusionStrength.Value = 1f;
@@ -326,7 +327,6 @@ namespace tarkin.SEGI.Bep
                     farOcclusionStrength.Value = 1f;
                     farthestOcclusionStrength.Value = 1f;
                     occlusionPower.Value = 1.5f;
-                    nearLightGain.Value = 1f;
                     giGain.Value = 4f;
 
                     secondaryBounceGain.Value = 1f;

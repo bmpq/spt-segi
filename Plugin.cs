@@ -19,7 +19,7 @@ namespace tarkin.SEGI.Bep
         AssetBundleManager assetBundleManager;
         SEGIManager segiManager;
 
-        internal static ConfigEntry<KeyboardShortcut> KeybindToggle;
+        internal ConfigEntry<KeyboardShortcut> KeybindToggle;
 
         void Start()
         {
@@ -59,6 +59,8 @@ namespace tarkin.SEGI.Bep
             patchManager = null;
 
             segiConfig = null;
+            KeybindToggle = null;
+
             Logger = null;
         }
     }
