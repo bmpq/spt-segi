@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <Version>0.0.1</Version>
+    <Version>0.1.0</Version>
     <LangVersion>latest</LangVersion>
     <RootNamespace>tarkin.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <DefineConstants>$(DefineConstants);SPT_4_0</DefineConstants>
@@ -48,6 +48,32 @@
 
     <Copy SourceFiles="@(CoreFiles)" DestinationFolder="$(SPTPath)\BepInEx\plugins\SEGI\" />
     <Copy SourceFiles="@(BepFiles)" DestinationFolder="$(BepDestination)" />
+  </Target>
 
+  <!-- release zipping -->
+  <Target Name="PackageZip" AfterTargets="CopyFilesAfterBuild" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ZipStagingDir>$(IntermediateOutputPath)ZipStaging\</ZipStagingDir>
+      <ZipPluginDir>$(ZipStagingDir)BepInEx\plugins\SEGI\</ZipPluginDir>
+      <ZipFileName>SEGI-v$(Version).zip</ZipFileName>
+      <ZipOutputPath>$(OutputPath)$(ZipFileName)</ZipOutputPath>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(ZipStagingDir)" />
+
+    <!-- grabs everything from BepDestination folder -->
+    <ItemGroup>
+      <FilesToZip Include="$(BepDestination)**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(FilesToZip)" DestinationFolder="$(ZipPluginDir)%(RecursiveDir)" />
+
+    <ZipDirectory
+      SourceDirectory="$(ZipStagingDir)"
+      DestinationFile="$(ZipOutputPath)"
+      Overwrite="true" />
+
+    <RemoveDir Directories="$(ZipStagingDir)" />
+    <Message Importance="High" Text="Successfully packaged release: $(ZipOutputPath)" />
   </Target>
 </Project>

@@ -207,8 +207,7 @@ namespace tarkin.SEGI.Bep
 
             skyReflectionIntensity = config.Bind(secRefl, "Sky Reflection Intensity", 1.0f,
                 new ConfigDescription("Brightness of sky reflections.",
-                new AcceptableValueRange<float>(0.0f, 1.0f),
-                tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
+                new AcceptableValueRange<float>(0.0f, 1.0f)));
 
 
             // Debug Tools
