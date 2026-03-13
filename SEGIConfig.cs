@@ -84,7 +84,7 @@ namespace tarkin.SEGI.Bep
             updateGI = config.Bind(secMain, "Update GI", true,
                 "If disabled, GI calculations stop and the scene uses cached data from the last frame. Disable to save performance in scenes.");
 
-            infiniteBounces = config.Bind(secMain, "Infinite Bounces", false,
+            infiniteBounces = config.Bind(secMain, "Infinite Bounces", true,
                 "Experimental. Enables a feedback loop for unlimited light bounces. Performance cost depends on 'Secondary Cones' setting.");
 
 
@@ -121,7 +121,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Controls how much previous frames contribute to the current frame. Lower values are smoother and less grainy but update 'lazily'.",
                 new AcceptableValueRange<float>(0.01f, 1.0f)));
 
-            useBilateralFiltering = config.Bind(secTrace, "Bilateral Filtering", false,
+            useBilateralFiltering = config.Bind(secTrace, "Bilateral Filtering", true,
                 "Blurs GI to smooth out graininess. Best used when Stochastic Sampling is enabled.");
 
             halfResolution = config.Bind(secTrace, "Half Resolution", true,
@@ -130,7 +130,7 @@ namespace tarkin.SEGI.Bep
             stochasticSampling = config.Bind(secTrace, "Stochastic Sampling", true,
                 "Randomizes trace cones per-pixel. Trades banding artifacts for noise (which can be smoothed with Temporal Blend).");
 
-            cones = config.Bind(secTrace, "Cones", 6,
+            cones = config.Bind(secTrace, "Cones", 24,
                 new ConfigDescription("Number of diffuse cones to trace. Higher values reduce noise/banding but cost performance. Lower values work well if Gaussian Mip Filter is on.",
                 new AcceptableValueRange<int>(1, 128)));
 
