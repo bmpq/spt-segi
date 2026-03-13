@@ -5,13 +5,6 @@ namespace tarkin.SEGI.Bep
 {
     internal class SEGIConfig
     {
-        private enum Preset
-        {
-            Low,
-            High
-        }
-        internal ConfigEntry<string> presetDummy;
-
         // Main Configuration
         internal ConfigEntry<SEGIRenderer.VoxelResolution> voxelResolution;
         internal ConfigEntry<bool> voxelAA;
@@ -64,16 +57,6 @@ namespace tarkin.SEGI.Bep
 
         public void Bind(ConfigFile config)
         {
-            // dummy entry to host the custom drawer
-            presetDummy = config.Bind("0. Presets", "Presets", "",
-                new ConfigDescription("", null,
-                    new ConfigurationManagerAttributes
-                    {
-                        CustomDrawer = DrawPresetButtons,
-                        HideDefaultButton = true,
-                        HideSettingName = true
-                    }));
-
             // Main Configuration
             const string secMain = "1. Main Configuration";
 
@@ -239,106 +222,6 @@ namespace tarkin.SEGI.Bep
 
             visualizeVoxels = config.Bind(secDebug, "Visualize Voxels", false,
                 "Displays the direct voxel data. Useful for checking if objects are being voxelized correctly.");
-        }
-
-        private void DrawPresetButtons(ConfigEntryBase entry)
-        {
-            GUILayout.BeginHorizontal();
-
-            foreach (Preset preset in System.Enum.GetValues(typeof(Preset)))
-            {
-                if (GUILayout.Button(preset.ToString(), GUILayout.ExpandWidth(true)))
-                    ApplyPreset(preset);
-            }
-
-            GUILayout.EndHorizontal();
-        }
-
-        private void ApplyPreset(Preset preset)
-        {
-            updateGI.Value = true;
-
-            softSunlight.Value = 0f;
-            skyIntensity.Value = 0f;
-            emissionContribution.Value = 0f;
-            sphericalSkylight.Value = false;
-            skyReflectionIntensity.Value = 1f;
-
-            nearLightGain.Value = 0f;
-
-            visualizeSunDepthTexture.Value = false;
-            visualizeGI.Value = false;
-            visualizeVoxels.Value = false;
-
-            switch (preset)
-            {
-                case Preset.Low:
-                    voxelResolution.Value = SEGIRenderer.VoxelResolution.high;
-                    voxelAA.Value = false;
-                    innerOcclusionLayers.Value = 0;
-                    gaussianMipFilter.Value = false;
-                    voxelSpaceSize.Value = 25f;
-                    shadowSpaceSize.Value = 30f;
-                    infiniteBounces.Value = false;
-                    temporalBlendWeight.Value = 0.15f;
-                    useBilateralFiltering.Value = true;
-                    halfResolution.Value = true;
-                    stochasticSampling.Value = true;
-                    cones.Value = 3;
-                    coneTraceSteps.Value = 8;
-                    coneLength.Value = 1f;
-                    coneWidth.Value = 5.5f;
-                    coneTraceBias.Value = 1f;
-                    occlusionStrength.Value = 1f;
-                    nearOcclusionStrength.Value = 0.5f;
-                    farOcclusionStrength.Value = 1f;
-                    farthestOcclusionStrength.Value = 1f;
-                    occlusionPower.Value = 1.5f;
-                    giGain.Value = 4f;
-
-                    secondaryBounceGain.Value = 1f;
-                    secondaryCones.Value = 3;
-                    secondaryOcclusionStrength.Value = 1f;
-
-                    doReflections.Value = false;
-                    reflectionSteps.Value = 32;
-                    reflectionOcclusionPower.Value = 1f;
-
-                    break;
-                case Preset.High:
-                    voxelResolution.Value = SEGIRenderer.VoxelResolution.high;
-                    voxelAA.Value = false;
-                    innerOcclusionLayers.Value = 0;
-                    gaussianMipFilter.Value = true;
-                    voxelSpaceSize.Value = 25f;
-                    shadowSpaceSize.Value = 30f;
-                    infiniteBounces.Value = false;
-                    temporalBlendWeight.Value = 0.1f;
-                    useBilateralFiltering.Value = false;
-                    halfResolution.Value = true;
-                    stochasticSampling.Value = true;
-                    cones.Value = 6;
-                    coneTraceSteps.Value = 14;
-                    coneLength.Value = 2f;
-                    coneWidth.Value = 5.5f;
-                    coneTraceBias.Value = 1f;
-                    occlusionStrength.Value = 1f;
-                    nearOcclusionStrength.Value = 0.5f;
-                    farOcclusionStrength.Value = 1f;
-                    farthestOcclusionStrength.Value = 1f;
-                    occlusionPower.Value = 1.5f;
-                    giGain.Value = 4f;
-
-                    secondaryBounceGain.Value = 1f;
-                    secondaryCones.Value = 6;
-                    secondaryOcclusionStrength.Value = 1f;
-
-                    doReflections.Value = true;
-                    reflectionSteps.Value = 64;
-                    reflectionOcclusionPower.Value = 1f;
-
-                    break;
-            }
         }
 
         public void Apply(SEGIRenderer segi)
