@@ -92,6 +92,12 @@ namespace tarkin.SEGI.Bep
                 segi.enabled = !segi.enabled;
         }
 
+        public void SetReflectionSkyColor(Color color)
+        {
+            if (segi != null)
+                segi.reflectionSkyColor = color;
+        }
+
         public void ApplyConfig(SEGIConfig segiConfig)
         {
             if (segi != null)

@@ -155,7 +155,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Samples taken per cone. Higher values reduce banding but darken indirect shadows. High values cost performance.",
                 new AcceptableValueRange<int>(1, 32)));
 
-            coneLength = config.Bind(secTrace, "Cone Length", 1.0f,
+            coneLength = config.Bind(secTrace, "Cone Length", 2.0f,
                 new ConfigDescription("Adjusts the 'GI Radius'. Determines how far away objects can be to contribute to lighting.",
                 new AcceptableValueRange<float>(0.1f, 2.0f)));
 
@@ -222,7 +222,7 @@ namespace tarkin.SEGI.Bep
                 new ConfigDescription("Higher values can reduce light leaking in reflections.",
                 new AcceptableValueRange<float>(0.001f, 4.0f)));
 
-            skyReflectionIntensity = config.Bind(secRefl, "Sky Reflection Intensity", 0.0f,
+            skyReflectionIntensity = config.Bind(secRefl, "Sky Reflection Intensity", 1.0f,
                 new ConfigDescription("Brightness of sky reflections.",
                 new AcceptableValueRange<float>(0.0f, 1.0f),
                 tags: new ConfigurationManagerAttributes() { IsAdvanced = true }));
@@ -262,7 +262,7 @@ namespace tarkin.SEGI.Bep
             skyIntensity.Value = 0f;
             emissionContribution.Value = 0f;
             sphericalSkylight.Value = false;
-            skyReflectionIntensity.Value = 0f;
+            skyReflectionIntensity.Value = 1f;
 
             nearLightGain.Value = 0f;
 

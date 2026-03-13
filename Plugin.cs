@@ -1,6 +1,8 @@
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using Comfort.Common;
+using EFT.Weather;
 using SPT.Reflection.Patching;
 using System.IO;
 using UnityEngine;
@@ -25,13 +27,13 @@ namespace tarkin.SEGI.Bep
         {
             Logger = base.Logger;
 
+            KeybindToggle = Config.Bind("_Keybinds_", "Toggle SEGI renderer", new KeyboardShortcut(KeyCode.PageUp), "");
+
             segiConfig = new SEGIConfig();
             segiConfig.Bind(this.Config);
 
             patchManager = new PatchManager(this, autoPatch: true);
             patchManager.EnablePatches();
-
-            KeybindToggle = Config.Bind("_Keybinds_", "Toggle SEGI renderer", new KeyboardShortcut(KeyCode.PageUp), "");
 
             assetBundleManager = new AssetBundleManager(Path.Combine(BepInEx.Paths.PluginPath, "SEGI"));
             segiManager = new SEGIManager(assetBundleManager.GetSEGIResources());
@@ -39,6 +41,18 @@ namespace tarkin.SEGI.Bep
 
         void Update()
         {
+            if (Singleton<TOD_Sky>.Instantiated)
+            {
+                Color skyColor = Singleton<TOD_Sky>.Instance.SampleAtmosphere(Vector3.zero, false);
+                skyColor = ToDController.SaturateColor(skyColor * 1.3f, 0.3f);
+                
+                segiManager.SetReflectionSkyColor(skyColor);
+            }
+            else
+            { 
+                segiManager.SetReflectionSkyColor(Color.black);
+            }
+
             segiManager.ApplyConfig(segiConfig);
 
             if (KeybindToggle.Value.IsDown())
