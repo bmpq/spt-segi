@@ -8,7 +8,7 @@ namespace tarkin.SEGI.Bep
 {
     internal class Patch_GameWorld_OnGameStarted : ModulePatch
     {
-        public static event Action<GameWorld> OnPostfix;
+        public static event Action OnPostfix;
 
         protected override MethodBase GetTargetMethod()
         {
@@ -18,7 +18,7 @@ namespace tarkin.SEGI.Bep
         [PatchPostfix]
         private static void PatchPostfix(GameWorld __instance)
         {
-            OnPostfix?.Invoke(__instance);
+            OnPostfix?.Invoke();
         }
     }
 }

@@ -6,38 +6,27 @@ using UnityEngine;
 
 namespace tarkin.SEGI.Bep
 {
-    internal class SEGIManager : IDisposable
+    internal class SEGIManager : MonoBehaviour
     {
-        readonly SEGIAssets resources;
-
         private SEGIRenderer segi;
 
-        internal SEGIManager(SEGIAssets segiResources)
-        {
-            resources = segiResources;
-
-            Patch_GameWorld_OnGameStarted.OnPostfix += Init;
-
-            if (Singleton<GameWorld>.Instantiated)
-                Init(Singleton<GameWorld>.Instance);
-        }
-
-        void Init(GameWorld gameWorld)
+        void Start()
         {
             Light mainLight = GetMainLight();
             if (mainLight == null)
+            {
+                Destroy(this);
                 return;
+            }
 
             PrepareWorld();
 
-            Camera targetCamera = CameraClass.Instance.Camera;
-
-            if (targetCamera.gameObject.TryGetComponent<SEGIRenderer>(out var oldInstance))
+            if (gameObject.TryGetComponent<SEGIRenderer>(out var oldInstance))
                 Component.Destroy(oldInstance);
 
-            segi = targetCamera.gameObject.AddComponent<SEGIRenderer>();
+            segi = gameObject.AddComponent<SEGIRenderer>();
 
-            segi.assetResources = resources;
+            segi.assetResources = Plugin.Instance.AssetBundleManager.GetSEGIResources();
 
             segi.sun = mainLight;
 
@@ -86,27 +75,32 @@ namespace tarkin.SEGI.Bep
             }
         }
 
-        public void Toggle()
+        void Update()
         {
-            if (segi != null)
+            if (Singleton<TOD_Sky>.Instantiated)
+            {
+                Color skyColor = Singleton<TOD_Sky>.Instance.SampleAtmosphere(Vector3.zero, false);
+                skyColor = ToDController.SaturateColor(skyColor * 1.3f, 0.3f);
+
+                segi.reflectionSkyColor = skyColor;
+            }
+            else
+            {
+                segi.reflectionSkyColor = Color.black;
+            }
+
+            Plugin.Instance.SegiConfig.Apply(segi);
+
+            if (Plugin.Instance.KeybindToggle.Value.IsDown())
+            {
                 segi.enabled = !segi.enabled;
+            }
         }
 
-        public void SetReflectionSkyColor(Color color)
+        void OnDestroy()
         {
             if (segi != null)
-                segi.reflectionSkyColor = color;
-        }
-
-        public void ApplyConfig(SEGIConfig segiConfig)
-        {
-            if (segi != null)
-                segiConfig.Apply(segi);
-        }
-
-        public void Dispose()
-        {
-            Patch_GameWorld_OnGameStarted.OnPostfix -= Init;
+                Component.Destroy(segi);
         }
     }
 }
